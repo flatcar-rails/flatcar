@@ -1,0 +1,192 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Flatcar by flatcar</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Flatcar</h1>
+        <p class="header">Rails development environment manager</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/flatcar/flatcar/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/flatcar/flatcar/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/flatcar/flatcar">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/flatcar">flatcar</a></p>
+
+
+      </header>
+      <section>
+        <h1>
+<a id="flatcar" class="anchor" href="#flatcar" aria-hidden="true"><span class="octicon octicon-link"></span></a>Flatcar</h1>
+
+<p>Developing Rails applications with Docker is easy with Flatcar. Using native Docker commands, Flatcar will build
+your application and link it to whatever database you choose to use.</p>
+
+<h2>
+<a id="installation-and-dependencies" class="anchor" href="#installation-and-dependencies" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation and Dependencies</h2>
+
+<p>Flatcar depends on <a href="https://www.docker.com">Docker</a>. You must have Docker and Docker Compose installed on your machine in order for Flatcar to work. If you are on Linux, <a href="http://docs.docker.com/linux/step_one/">install Docker</a> with official packages. On a <a href="http://docs.docker.com/mac/started/">Mac</a> or <a href="http://docs.docker.com/windows/started/">Windows</a>, you will need to run a lightweight VM in order to use Docker. You can do this via <a href="https://www.docker.com/toolbox">Docker Toolbox</a> or by running a VM of your choice.</p>
+
+<p>Then, <code>gem install flatcar</code> and you're ready to get rolling.</p>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<h4>
+<a id="creating-a-new-rails-project" class="anchor" href="#creating-a-new-rails-project" aria-hidden="true"><span class="octicon octicon-link"></span></a>Creating a new Rails project</h4>
+
+<p>From the desired parent directory, run <code>flatcar init $new_project_name</code>. This will initialize a new Rails application in a directory of the same name. </p>
+
+<h4>
+<a id="using-an-existing-rails-project" class="anchor" href="#using-an-existing-rails-project" aria-hidden="true"><span class="octicon octicon-link"></span></a>Using an existing Rails project</h4>
+
+<p>Run <code>flatcar init $path_to_project</code> to begin a new project. You can initialize a flatcar project from the current directory by simply running <code>flatcar init</code>.</p>
+
+<p><code>flatcar init ($new_project_name|$path_to_project)</code> will perform the following operations:</p>
+
+<ol>
+<li>If no project path is specified, it runs <code>rails new -B $app_path</code>. </li>
+<li>Flatcar generates a Dockerfile for the Rails service</li>
+<li>A docker-compose.yml file is generated for the entire project.</li>
+</ol>
+
+<p>Flatcar applications are run via <code>docker-compose</code> in the project's directory. If you're using a VM, make sure to create appropriate port forwarding rules in order to view the application in your browser. Flatcar will bind 3000:3000 from host:container via Docker's <code>-p</code> flag at runtime.</p>
+
+<p>To run the application, cd into the project directory and run <code>docker-compose up</code>. To run the services in the background, use the <code>-d</code> flag.</p>
+
+<h4>
+<a id="init" class="anchor" href="#init" aria-hidden="true"><span class="octicon octicon-link"></span></a>init</h4>
+
+<p>Flatcar uses the following syntax: <code>flatcar [global options] init [command options] [APP_NAME]</code></p>
+
+<p>The <code>init</code> command initializes a Rails application with an optional base image and database specified. If executed within an existing Rails project directory without the APP_NAME argument, the Flatcar generated files will be placed in the current directory. If the command is executed with the optional APP_NAME argument, a new Rails project will be generated along with the Flatcar files in a subdirectory of the current directory.</p>
+
+<h5>
+<a id="selecting-a-base-image" class="anchor" href="#selecting-a-base-image" aria-hidden="true"><span class="octicon octicon-link"></span></a>Selecting a base image</h5>
+
+<p>You can specify which OS to use for your Rails service by passing in the -b flag. Valid options are alpine, ubuntu, or rails (debian-based). If no option is given, the default Rails image will be used.</p>
+
+<h5>
+<a id="choosing-a-database" class="anchor" href="#choosing-a-database" aria-hidden="true"><span class="octicon octicon-link"></span></a>Choosing a database</h5>
+
+<p>You can also specify which database to use with your Rails application. Valid options are mysql, postgresql, or sqlite3. If mysql or postgresql is chosen, a new database service will be defined in the generated docker-compose.yml file. If no option is given, sqlite3 will be used. </p>
+
+<h5>
+<a id="command-options" class="anchor" href="#command-options" aria-hidden="true"><span class="octicon octicon-link"></span></a>Command Options</h5>
+
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>- <code>-G</code>, <code>--[no-]skip-git</code>
+</td>
+<td>Skip .gitignore file</td>
+</tr>
+<tr>
+<td>- <code>-J</code>, <code>--[no-]skip-javascript</code>
+</td>
+<td>Skip JavaScript files</td>
+</tr>
+<tr>
+<td>- <code>-O, --[no-]skip-active-record</code>
+</td>
+<td>Skip Active Record files</td>
+</tr>
+<tr>
+<td>- <code>-S, --[no-]skip-sprockets</code>
+</td>
+<td>Skip Sprockets files</td>
+</tr>
+<tr>
+<td>- <code>-T, --[no-]skip-test-unit</code>
+</td>
+<td>Skip Test::Unit files</td>
+</tr>
+<tr>
+<td>- <code>-V, --[no-]skip-action-view</code>
+</td>
+<td>Skip Action View files</td>
+</tr>
+<tr>
+<td>- <code>-b, --base=BASE_IMAGE</code>
+</td>
+<td>Sets the base image to use in the Dockerfile (default: rails)</td>
+</tr>
+<tr>
+<td>- <code>-d, --database=DATABASE</code>
+</td>
+<td>Sets the database to use. (default: sqlite3)</td>
+</tr>
+<tr>
+<td>- <code>--[no-]dev</code>
+</td>
+<td>Setup the application with Gemfile pointing to your Rails checkout</td>
+</tr>
+<tr>
+<td>- <code>--[no-]edge</code>
+</td>
+<td>Setup the application with Gemfile pointing to Rails repository</td>
+</tr>
+<tr>
+<td>- <code>-j, --javascript=JAVASCRIPT</code>
+</td>
+<td>Preconfigure for selected JavaScript library. (default: jquery)</td>
+</tr>
+<tr>
+<td>- <code>-m, --template=TEMPLATE</code>
+</td>
+<td>Path to some application template (can be a filesystem path or URL) (default: none)</td>
+</tr>
+<tr>
+<td>- <code>--[no-]skip-keeps</code>
+</td>
+<td>Skip source control .keep files</td>
+</tr>
+<tr>
+<td>- <code>--[no-]skip-spring</code>
+</td>
+<td>Don't install Spring application preloader</td>
+</tr>
+</tbody>
+</table>
+
+<h2>
+<a id="testing" class="anchor" href="#testing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Testing</h2>
+
+<p>Flatcar uses rspec. To run the test suite, run <code>bundle exec rspec spec</code>.</p>
+
+<h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<p>Flatcar uses an Apache License and your contributions are welcome.
+First, <code>git clone https://github.com/CenturyLinkLabs/flatcar.git</code>.
+Flarcar uses GLI, which is a very useful tool for writing command line tools. More information on GLI can be found on <a href="http://naildrivin5.com/gli/">the project page</a> as well as the <a href="https://github.com/davetron5000/gli">GitHub repo</a>.
+To run flatcar in development mode, we recommend passing in GLI_DEBUG=true to your run command.  </p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
