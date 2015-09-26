@@ -12,6 +12,20 @@ Valid values for DATABASE are: mysql, postgresql, or sqlite3.  If mysql or postg
 will be defined in the generated docker-compose.yml file.
 }
 arg 'APP_NAME', :optional
+
+pre do |global_options,command,options,args|
+
+  unless options['overwrite-existing']
+    path = args.empty? ? '.' : args[0]
+    if File.exists?("#{path}/docker-compose.yml") ||
+      File.exists?("#{path}/Dockerfile")
+      exit_now!("Docker config files already exist, to overwrite, run the commmand with the -F flag")
+    end
+  end
+
+  true
+end
+
 command :init do |c|
   c.flag [:b, :base],
          default_value: 'rails',
@@ -46,6 +60,9 @@ command :init do |c|
 
   c.switch [:'skip-spring'],
            desc: "Don't install Spring application preloader"
+
+  c.switch [:F, :'overwrite-existing'],
+           desc: "Overwrite existing Dockerfile and docker-compose.yml"
 
   c.flag [:j, :javascript],
          default_value: 'jquery',
