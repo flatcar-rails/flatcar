@@ -1,5 +1,7 @@
 # Flatcar
 
+![](https://codeship.com/projects/e6c5e130-4650-0133-a218-569fce9c4062/status?branch=master)
+
 Developing Rails applications with Docker is easy with Flatcar. Using native Docker commands, Flatcar will build
 your application and link it to whatever database you choose to use.
 
