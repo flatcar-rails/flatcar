@@ -19,8 +19,36 @@ describe Flatcar::WebappService do
         expect(subject.dockerfile).to eq([
                                            'FROM rails:latest',
                                            'RUN apt-get update && apt-get install -y nodejs --no-install-recommends && rm -rf /var/lib/apt/lists/*',
-                                           'RUN apt-get update && apt-get install -y mysql-client postgresql-client sqlite3 --no-install-recommends && rm -rf /var/lib/apt/lists/*',
+                                           'RUN apt-get update && apt-get install -y libsqlite3-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*',
                                          ].push(common_lines).join("\n"))
+      end
+
+      context 'with a postgresql database' do
+        let(:postgresql) { double('postgresql_service', name: 'postgresql') }
+
+        subject { described_class.new('rails', postgresql) }
+
+        it 'includes the alpine base image instructions with the postgres libraries' do
+          expect(subject.dockerfile).to eq([
+                                             'FROM rails:latest',
+                                             'RUN apt-get update && apt-get install -y nodejs --no-install-recommends && rm -rf /var/lib/apt/lists/*',
+                                             'RUN apt-get update && apt-get install -y postgresql-client --no-install-recommends && rm -rf /var/lib/apt/lists/*',
+                                           ].push(common_lines).join("\n"))
+        end
+      end
+
+      context 'with a mysql database' do
+        let(:mysql) { double('mysql_service', name: 'mysql') }
+
+        subject { described_class.new('rails', mysql) }
+
+        it 'includes the alpine base image instructions with the mysql libraries' do
+          expect(subject.dockerfile).to eq([
+                                             'FROM rails:latest',
+                                             'RUN apt-get update && apt-get install -y nodejs --no-install-recommends && rm -rf /var/lib/apt/lists/*',
+                                             'RUN apt-get update && apt-get install -y mysql-client --no-install-recommends && rm -rf /var/lib/apt/lists/*',
+                                           ].push(common_lines).join("\n"))
+        end
       end
     end
 
@@ -29,8 +57,35 @@ describe Flatcar::WebappService do
 
       it 'includes the ubuntu base image instructions' do
         expect(subject.dockerfile).to eq([
-                                           'FROM flatcar/ubuntu-rails'
+                                           'FROM flatcar/ubuntu-rails',
+                                           'RUN apt-get update && apt-get install -y libsqlite3-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*',
                                          ].push(common_lines).join("\n"))
+      end
+
+      context 'with a postgresql database' do
+        let(:postgresql) { double('postgresql_service', name: 'postgresql') }
+
+        subject { described_class.new('ubuntu', postgresql) }
+
+        it 'includes the alpine base image instructions with the postgres libraries' do
+          expect(subject.dockerfile).to eq([
+                                             'FROM flatcar/ubuntu-rails',
+                                             'RUN apt-get update && apt-get install -y postgresql-client --no-install-recommends && rm -rf /var/lib/apt/lists/*'
+                                           ].push(common_lines).join("\n"))
+        end
+      end
+
+      context 'with a mysql database' do
+        let(:mysql) { double('mysql_service', name: 'mysql') }
+
+        subject { described_class.new('ubuntu', mysql) }
+
+        it 'includes the alpine base image instructions with the mysql libraries' do
+          expect(subject.dockerfile).to eq([
+                                             'FROM flatcar/ubuntu-rails',
+                                             'RUN apt-get update && apt-get install -y mysql-client --no-install-recommends && rm -rf /var/lib/apt/lists/*'
+                                           ].push(common_lines).join("\n"))
+        end
       end
     end
 
@@ -39,8 +94,35 @@ describe Flatcar::WebappService do
 
       it 'includes the debian base image instructions' do
         expect(subject.dockerfile).to eq([
-                                           'FROM flatcar/debian-rails'
+                                           'FROM flatcar/debian-rails',
+                                           'RUN apt-get update && apt-get install -y libsqlite3-dev --no-install-recommends && rm -rf /var/lib/apt/lists/*'
                                          ].push(common_lines).join("\n"))
+      end
+
+      context 'with a postgresql database' do
+        let(:postgresql) { double('postgresql_service', name: 'postgresql') }
+
+        subject { described_class.new('debian', postgresql) }
+
+        it 'includes the alpine base image instructions with the postgres libraries' do
+          expect(subject.dockerfile).to eq([
+                                             'FROM flatcar/debian-rails',
+                                             'RUN apt-get update && apt-get install -y postgresql-client --no-install-recommends && rm -rf /var/lib/apt/lists/*'
+                                           ].push(common_lines).join("\n"))
+        end
+      end
+
+      context 'with a mysql database' do
+        let(:mysql) { double('mysql_service', name: 'mysql') }
+
+        subject { described_class.new('debian', mysql) }
+
+        it 'includes the alpine base image instructions with the mysql libraries' do
+          expect(subject.dockerfile).to eq([
+                                             'FROM flatcar/debian-rails',
+                                             'RUN apt-get update && apt-get install -y mysql-client --no-install-recommends && rm -rf /var/lib/apt/lists/*'
+                                           ].push(common_lines).join("\n"))
+        end
       end
     end
 
@@ -51,6 +133,7 @@ describe Flatcar::WebappService do
         it 'includes the alpine base image instructions' do
           expect(subject.dockerfile).to eq([
                                              'FROM flatcar/alpine-rails',
+                                             'RUN apk --update --upgrade add sqlite-dev && rm -rf /var/cache/apk/*',
                                            ].push(common_lines).join("\n"))
         end
       end
@@ -62,7 +145,8 @@ describe Flatcar::WebappService do
 
         it 'includes the alpine base image instructions with the postgres libraries' do
           expect(subject.dockerfile).to eq([
-                                             'FROM flatcar/alpine-rails'
+                                             'FROM flatcar/alpine-rails',
+                                             'RUN apk --update --upgrade add postgresql-dev && rm -rf /var/cache/apk/*',
                                            ].push(common_lines).join("\n"))
         end
       end
@@ -74,7 +158,8 @@ describe Flatcar::WebappService do
 
         it 'includes the alpine base image instructions with the mysql libraries' do
           expect(subject.dockerfile).to eq([
-                                             'FROM flatcar/alpine-rails'
+                                             'FROM flatcar/alpine-rails',
+                                             'RUN apk --update --upgrade add mysql && rm -rf /var/cache/apk/*',
                                            ].push(common_lines).join("\n"))
         end
       end
