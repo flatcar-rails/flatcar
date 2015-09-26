@@ -27,4 +27,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'simplecov', '~> 0.10.0'
   gem.add_development_dependency 'simplecov-rcov', '~> 0.2.3'
   gem.add_development_dependency 'rdoc', '~> 4.2'
+  gem.add_development_dependency 'rubocop'
 end
