@@ -8,7 +8,9 @@ your application and link it to whatever database you choose to use.
 ##Installation and Dependencies
 Flatcar depends on [Docker](https://www.docker.com). You must have Docker and Docker Compose installed on your machine in order for Flatcar to work. If you are on Linux, [install Docker](http://docs.docker.com/linux/step_one/) with official packages. On a [Mac](http://docs.docker.com/mac/started/) or [Windows](http://docs.docker.com/windows/started/), you will need to run a lightweight VM in order to use Docker. You can do this via [Docker Toolbox](https://www.docker.com/toolbox) or by running a VM of your choice.
 
-Then, `gem install flatcar` and you're ready to get rolling.
+If you are using Docker Toolbox, be sure to eval the Docker Machine environment variables in you terminal window before proceeding.
+
+Right now, Flatcar is still under active development. You can run the gem locally and develop against it. When it reaches a release state, it will be available on Ruby Gems again.
 
 ##Usage
 ####Creating a new Rails project
